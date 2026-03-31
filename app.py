@@ -5,12 +5,12 @@ import os
 df = pd.read_excel("実験馬選択.xlsx")
 df = df.fillna("")
 
-@st.dialog("画像表示", width="large")
+@st.dialog("", width="large")
 def show_image(name):
 
-    image_path = find_image(name)
+    image_path = f"images/{name}.jpg"
 
-    if image_path:
+    if os.path.exists(image_path):
         st.image(image_path, use_container_width=True)
     else:
         st.warning("画像が見つかりません")
