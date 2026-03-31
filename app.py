@@ -2,12 +2,22 @@ import streamlit as st
 import pandas as pd
 import os
 
+df = pd.read_excel("実験馬選択.xlsx")
+df = df.fillna("")
+
+@st.dialog("画像表示", width="large")
+def show_image(name):
+
+    image_path = find_image(name)
+
+    if image_path:
+        st.image(image_path, use_container_width=True)
+    else:
+        st.warning("画像が見つかりません")
+
 st.set_page_config(layout="wide")
 
 st.title("馬選択")
-
-df = pd.read_excel("実験馬選択.xlsx")
-df = df.fillna("")
 
 # --- 五十音グループ ---
 groups = {
@@ -53,18 +63,8 @@ with right:
 
     for i, (_, row) in enumerate(filtered.iterrows()):
         col = cols[i % 2]
-
+    
+        # --- 画像表示 ---
         if col.button(row["馬名"], use_container_width=True):
             st.session_state.selected_horse = row["馬名"]
-
-    # --- 画像表示 ---
-    if st.session_state.selected_horse:
-        st.divider()
-        st.markdown(f"## {st.session_state.selected_horse}")
-
-        image_path = f"images/{st.session_state.selected_horse}.jpg"
-
-        if os.path.exists(image_path):
-            st.image(image_path, use_container_width=True)
-        else:
-            st.warning("画像が見つかりません")
+            show_image(row["馬名"])
