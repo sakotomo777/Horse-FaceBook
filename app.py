@@ -5,7 +5,7 @@ import os
 df = pd.read_excel("実験馬選択.xlsx")
 df = df.fillna("")
 
-@st.dialog("", width="large")
+@st.dialog(" ", width="large")
 def show_image(name):
 
     image_path = f"images/{name}.jpg"
