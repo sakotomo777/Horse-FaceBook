@@ -4,31 +4,6 @@ import os
 
 st.set_page_config(layout="wide")
 
-st.markdown("""
-<style>
-div[data-testid="stVerticalBlock"] > div:has(.sticky-header) {
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 999;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<style>
-.group-buttons div[data-testid="stButton"] > button {
-    font-size: 11px;
-    padding: 2px 4px;
-    height: 30px;
-    min-width: 40px !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-
 df = pd.read_excel("実験馬選択.xlsx")
 df = df.fillna("")
 
@@ -37,8 +12,6 @@ def show_image(name):
     image_path = f"images/{name}.jpg"
     if os.path.exists(image_path):
         st.image(image_path, use_container_width=True)
-
-st.title("馬選択")
 
 # --- 五十音グループ ---
 groups = {
@@ -51,6 +24,20 @@ groups = {
     "マ": ("マ","ミ","ム","メ","モ"),
     "ヤラワ": ("ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ")
 }
+col1, col2 = st.columns([2,1])
+
+with col1:
+    st.title("馬選択")
+
+with col2:
+    selected_group = st.selectbox(
+        "行",
+        list(groups.keys()),
+        index=list(groups.keys()).index(st.session_state.selected_group),
+        label_visibility="collapsed"
+    )
+
+st.session_state.selected_group = selected_group
 
 
 # セッションに選択状態を保存
@@ -60,25 +47,6 @@ if "selected_group" not in st.session_state:
 if "selected_horse" not in st.session_state:
     st.session_state.selected_horse = None
 
-# ---五十音ボタン ---
-st.markdown('<div class="group-buttons">', unsafe_allow_html=True)
-
-keys = list(groups.keys())
-
-row1 = st.columns(4)
-row2 = st.columns(4)
-
-for i in range(4):
-    if row1[i].button(keys[i], use_container_width=True):
-        st.session_state.selected_group = keys[i]
-
-for i in range(4, len(keys)):
-    if row2[i-4].button(keys[i], use_container_width=True):
-        st.session_state.selected_group = keys[i]
-
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
-
 # ---馬名一覧 ---
 selected_chars = groups[st.session_state.selected_group]
 
@@ -87,7 +55,7 @@ filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
 st.subheader(f"{st.session_state.selected_group} 行")
 
 # 2列表示
-cols = st.columns(3)
+cols = st.columns(2)
 
 for i, (_, row) in enumerate(filtered.iterrows()):
     col = cols[i % 2]
