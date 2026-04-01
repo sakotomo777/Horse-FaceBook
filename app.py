@@ -71,10 +71,11 @@ horse = st.radio(
     "🐎 馬を選択",
     horse_list
 )
+
+st.session_state.selected_horse = horse
 if st.button("画像表示"):
     st.session_state.show_dialog = True
 
 if st.session_state.show_dialog and st.session_state.selected_horse:
     show_image(st.session_state.selected_horse)
     st.session_state.show_dialog = False
-
