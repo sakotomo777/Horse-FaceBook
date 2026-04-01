@@ -24,6 +24,15 @@ groups = {
     "マ": ("マ","ミ","ム","メ","モ"),
     "ヤラワ": ("ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ")
 }
+
+# セッションに選択状態を保存
+if "selected_group" not in st.session_state:
+    st.session_state.selected_group = "ア"
+
+if "selected_horse" not in st.session_state:
+    st.session_state.selected_horse = None
+
+#　画面レイアウト
 col1, col2 = st.columns([2,1])
 
 with col1:
@@ -38,14 +47,6 @@ with col2:
     )
 
 st.session_state.selected_group = selected_group
-
-
-# セッションに選択状態を保存
-if "selected_group" not in st.session_state:
-    st.session_state.selected_group = "ア"
-
-if "selected_horse" not in st.session_state:
-    st.session_state.selected_horse = None
 
 # ---馬名一覧 ---
 selected_chars = groups[st.session_state.selected_group]
