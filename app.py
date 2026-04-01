@@ -53,7 +53,6 @@ selected_chars = groups[st.session_state.selected_group]
 
 filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
 
-st.subheader(f"{st.session_state.selected_group} 行")
 horse_list = filtered["馬名"].tolist()
 horse = st.radio(
     "🐎 馬を選択",
