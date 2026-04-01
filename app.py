@@ -36,7 +36,7 @@ if "selected_horse" not in st.session_state:
 col1, col2 = st.columns([2,1])
 
 with col1:
-    st.title("馬選択")
+    st.title("行選択")
 
 with col2:
     selected_group = st.selectbox(
@@ -54,14 +54,14 @@ selected_chars = groups[st.session_state.selected_group]
 filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
 
 st.subheader(f"{st.session_state.selected_group} 行")
+horse_list = filtered["馬名"].tolist()
+horse = st.selectbox(
+    "🐎 馬を選択",
+    horse_list
+)
 
-# 2列表示
-cols = st.columns(2)
+if horse:
+    st.session_state.selected_horse = horse
 
-for i, (_, row) in enumerate(filtered.iterrows()):
-    col = cols[i % 2]
-    
-    # --- 画像表示 ---
-    if col.button(row["馬名"], use_container_width=True):
-        st.session_state.selected_horse = row["馬名"]
-        show_image(st.session_state.selected_horse)
+if st.session_state.selected_horse:
+    show_image(st.session_state.selected_horse)
