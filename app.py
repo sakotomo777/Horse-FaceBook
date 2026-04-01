@@ -42,9 +42,6 @@ if "selected_group" not in st.session_state:
 if "selected_horse" not in st.session_state:
     st.session_state.selected_horse = None
 
-if "show_dialog" not in st.session_state:
-    st.session_state.show_dialog = False
-
 #　画面レイアウト
 col1, col2 = st.columns([2,1])
 
@@ -67,15 +64,28 @@ selected_chars = groups[st.session_state.selected_group]
 filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
 
 horse_list = filtered["馬名"].tolist()
+
 horse = st.radio(
     "🐎 馬を選択",
-    horse_list
+    horse_list,
+    key="horse_radio"
 )
 
-st.session_state.selected_horse = horse
-if st.button("画像表示"):
-    st.session_state.show_dialog = True
+# 初期化
+if "last_horse" not in st.session_state:
+    st.session_state.last_horse = None
 
-if st.session_state.show_dialog and st.session_state.selected_horse:
-    show_image(st.session_state.selected_horse)
-    st.session_state.show_dialog = False
+if "prev_group" not in st.session_state:
+    st.session_state.prev_group = st.session_state.selected_group
+
+# 行変更時はリセット
+if st.session_state.prev_group != st.session_state.selected_group:
+    st.session_state.last_horse = None
+    st.session_state.prev_group = st.session_state.selected_group
+
+if horse and horse != st.session_state.last_horse:
+    show_image(horse)
+    st.session_state.last_horse = horse
+
+# 常に保存
+st.session_state.selected_horse = horse
