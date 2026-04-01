@@ -47,7 +47,7 @@ if "last_horse" not in st.session_state:
     st.session_state.last_horse = None
 
 if "skip_once" not in st.session_state:
-    st.session_state.skip_once = False
+    st.session_state.skip_once = True
 
 
 #　画面レイアウト
