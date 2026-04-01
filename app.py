@@ -4,6 +4,14 @@ import os
 
 st.set_page_config(layout="wide")
 
+st.markdown("""
+<style>
+div[role="radiogroup"] label > div:first-child {
+    display: none;
+}
+</style>
+""", unsafe_allow_html=True)
+
 df = pd.read_excel("実験馬選択.xlsx")
 df = df.fillna("")
 
