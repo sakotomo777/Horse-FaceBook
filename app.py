@@ -83,7 +83,8 @@ horse_list = filtered["馬名"].tolist()
 horse = st.radio(
     "🐎 馬を選択",
     horse_list,
-    key="horse_radio"
+    key="horse_radio",
+    index=None
 )
 
 # --- 表示制御 ---
