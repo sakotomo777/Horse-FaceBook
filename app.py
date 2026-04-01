@@ -17,6 +17,15 @@ div[data-testid="stVerticalBlock"] > div:has(.sticky-header) {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+.group-buttons div[data-testid="stButton"] > button {
+    font-size: 12px;
+    padding: 4px 6px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 df = pd.read_excel("実験馬選択.xlsx")
 df = df.fillna("")
 
@@ -49,7 +58,7 @@ if "selected_horse" not in st.session_state:
     st.session_state.selected_horse = None
 
 # ---五十音ボタン ---
-st.markdown('<div class="sticky-header">', unsafe_allow_html=True)
+st.markdown('<div class="group-buttons">', unsafe_allow_html=True)
 
 keys = list(groups.keys())
 
