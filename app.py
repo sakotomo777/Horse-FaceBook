@@ -42,6 +42,14 @@ if "selected_group" not in st.session_state:
 if "selected_horse" not in st.session_state:
     st.session_state.selected_horse = None
 
+# --- 初期化 ---
+if "last_horse" not in st.session_state:
+    st.session_state.last_horse = None
+
+if "skip_once" not in st.session_state:
+    st.session_state.skip_once = False
+
+
 #　画面レイアウト
 col1, col2 = st.columns([2,1])
 
@@ -56,36 +64,33 @@ with col2:
         label_visibility="collapsed"
     )
 
+prev = st.session_state.selected_group
 st.session_state.selected_group = selected_group
 
+
+# 行変更検知
+if prev != st.session_state.selected_group:
+    st.session_state.last_horse = None
+    st.session_state.skip_once = True
+    st.session_state.horse_radio = None 
 # ---馬名一覧 ---
 selected_chars = groups[st.session_state.selected_group]
-
 filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
-
 horse_list = filtered["馬名"].tolist()
 
+
+# --- ここでradio ---
 horse = st.radio(
     "🐎 馬を選択",
     horse_list,
     key="horse_radio"
 )
 
-# 初期化
-if "last_horse" not in st.session_state:
-    st.session_state.last_horse = None
-
-if "prev_group" not in st.session_state:
-    st.session_state.prev_group = st.session_state.selected_group
-
-# 行変更時はリセット
-if st.session_state.prev_group != st.session_state.selected_group:
-    st.session_state.last_horse = None
-    st.session_state.prev_group = st.session_state.selected_group
-
+# --- 表示制御 ---
 if horse and horse != st.session_state.last_horse:
-    show_image(horse)
-    st.session_state.last_horse = horse
+    if st.session_state.skip_once:
+        st.session_state.skip_once = False
+    else:
+        show_image(horse)
+        st.session_state.last_horse = horse
 
-# 常に保存
-st.session_state.selected_horse = horse
