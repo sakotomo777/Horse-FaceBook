@@ -74,6 +74,7 @@ for i in range(4, len(keys)):
         st.session_state.selected_group = keys[i]
 
 st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ---馬名一覧 ---
 selected_chars = groups[st.session_state.selected_group]
@@ -83,7 +84,7 @@ filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
 st.subheader(f"{st.session_state.selected_group} 行")
 
 # 2列表示
-cols = st.columns(2)
+cols = st.columns(3)
 
 for i, (_, row) in enumerate(filtered.iterrows()):
     col = cols[i % 2]
@@ -91,4 +92,4 @@ for i, (_, row) in enumerate(filtered.iterrows()):
     # --- 画像表示 ---
     if col.button(row["馬名"], use_container_width=True):
         st.session_state.selected_horse = row["馬名"]
-        show_image(row["馬名"])
+        show_image(st.session_state.selected_horse)
