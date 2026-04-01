@@ -42,6 +42,9 @@ if "selected_group" not in st.session_state:
 if "selected_horse" not in st.session_state:
     st.session_state.selected_horse = None
 
+if "show_dialog" not in st.session_state:
+    st.session_state.show_dialog = False
+
 #　画面レイアウト
 col1, col2 = st.columns([2,1])
 
@@ -68,7 +71,10 @@ horse = st.radio(
     "🐎 馬を選択",
     horse_list
 )
+if st.button("画像表示"):
+    st.session_state.show_dialog = True
 
-# ダイアログ表示
-if horse:
-    show_image(horse)
+if st.session_state.show_dialog and st.session_state.selected_horse:
+    show_image(st.session_state.selected_horse)
+    st.session_state.show_dialog = False
+
