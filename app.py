@@ -20,11 +20,14 @@ div[data-testid="stVerticalBlock"] > div:has(.sticky-header) {
 st.markdown("""
 <style>
 .group-buttons div[data-testid="stButton"] > button {
-    font-size: 12px;
-    padding: 4px 6px;
+    font-size: 11px;
+    padding: 2px 4px;
+    height: 30px;
+    min-width: 40px !important;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 df = pd.read_excel("実験馬選択.xlsx")
 df = df.fillna("")
