@@ -27,7 +27,7 @@ groups = {
     "ヤラワ行": ("ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ")
 }
 
-# セッション初期化
+# --- セッション初期化 ---
 if "selected_group" not in st.session_state:
     st.session_state.selected_group = "ア行"
 
@@ -37,47 +37,41 @@ if "selected_horse" not in st.session_state:
 if "last_group" not in st.session_state:
     st.session_state.last_group = st.session_state.selected_group
 
-# --- 画面レイアウト ---
-col1, col2 = st.columns([1, 6], gap="small")
+# --- 行選択 ---
+selected_group = st.selectbox(
+    "行を選択",
+    list(groups.keys()),
+    index=list(groups.keys()).index(st.session_state.selected_group)
+)
 
-with col1:
-    selected_group = st.selectbox(
-        "行",
-        list(groups.keys()),
-        index=list(groups.keys()).index(st.session_state.selected_group)
-    )
-
-# 行が変わったら馬選択をリセット
+# 行変更時リセット
 if selected_group != st.session_state.last_group:
     st.session_state.selected_horse = None
     st.session_state.last_group = selected_group
 
 st.session_state.selected_group = selected_group
 
-# --- 馬名一覧 ---
+# --- 馬名抽出 ---
 selected_chars = groups[st.session_state.selected_group]
 filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
 horse_list = filtered["馬名"].tolist()
 
-with col2:
-    if horse_list:
-        selected_horse = st.selectbox(
-            "馬名",
-            options=["選択してください"] + horse_list,
-            index=0 if st.session_state.selected_horse is None else (
-                horse_list.index(st.session_state.selected_horse) + 1
-                if st.session_state.selected_horse in horse_list else 0
-            )
-        )
+st.subheader("🐎 馬を選択")
 
-        if selected_horse == "選択してください":
-            st.session_state.selected_horse = None
-        else:
-            st.session_state.selected_horse = selected_horse
-    else:
-        st.selectbox("馬名", ["該当なし"], index=0)
-        st.session_state.selected_horse = None
+# --- radio（ここがポイント） ---
+if horse_list:
+    selected_horse = st.radio(
+        "",
+        horse_list,
+        index=horse_list.index(st.session_state.selected_horse)
+        if st.session_state.selected_horse in horse_list else 0
+    )
 
-# --- 画像表示 ---
-if st.session_state.selected_horse:
-    show_image(st.session_state.selected_horse)
+    # 前回と違うときだけ表示
+    if selected_horse != st.session_state.selected_horse:
+        st.session_state.selected_horse = selected_horse
+        show_image(selected_horse)
+
+else:
+    st.write("該当する馬がいません")
+    st.session_state.selected_horse = None
