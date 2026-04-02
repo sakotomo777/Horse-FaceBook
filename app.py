@@ -4,16 +4,6 @@ import os
 
 st.set_page_config(layout="wide")
 
-#ラジオボタンの〇消す
-st.markdown("""
-<style>
-div[role="radiogroup"] label > div:first-child {
-    display: none;
-}
-</style>
-""", unsafe_allow_html=True)
-
-
 df = pd.read_excel("実験馬選択.xlsx")
 df = df.fillna("")
 
@@ -22,6 +12,8 @@ def show_image(name):
     image_path = f"images/{name}.jpg"
     if os.path.exists(image_path):
         st.image(image_path, use_container_width=True)
+    else:
+        st.warning("画像が見つかりません")
 
 # --- 五十音グループ ---
 groups = {
@@ -35,63 +27,57 @@ groups = {
     "ヤラワ行": ("ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ")
 }
 
-# セッションに選択状態を保存
+# セッション初期化
 if "selected_group" not in st.session_state:
     st.session_state.selected_group = "ア行"
 
 if "selected_horse" not in st.session_state:
     st.session_state.selected_horse = None
 
-# --- 初期化 ---
-if "last_horse" not in st.session_state:
-    st.session_state.last_horse = None
+if "last_group" not in st.session_state:
+    st.session_state.last_group = st.session_state.selected_group
 
-if "skip_once" not in st.session_state:
-    st.session_state.skip_once = True
-
-
-#　画面レイアウト
-col1, col2 = st.columns([2,1])
+# --- 画面レイアウト ---
+col1, col2 = st.columns([1, 2])
 
 with col1:
-    st.title("行選択")
-
-with col2:
     selected_group = st.selectbox(
         "行",
         list(groups.keys()),
-        index=list(groups.keys()).index(st.session_state.selected_group),
-        label_visibility="collapsed"
+        index=list(groups.keys()).index(st.session_state.selected_group)
     )
 
-prev = st.session_state.selected_group
+# 行が変わったら馬選択をリセット
+if selected_group != st.session_state.last_group:
+    st.session_state.selected_horse = None
+    st.session_state.last_group = selected_group
+
 st.session_state.selected_group = selected_group
 
-
-# 行変更検知
-if prev != st.session_state.selected_group:
-    st.session_state.last_horse = None
-    st.session_state.skip_once = True
-    st.session_state.horse_radio = None 
-# ---馬名一覧 ---
+# --- 馬名一覧 ---
 selected_chars = groups[st.session_state.selected_group]
 filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
 horse_list = filtered["馬名"].tolist()
 
+with col2:
+    if horse_list:
+        selected_horse = st.selectbox(
+            "馬名",
+            options=["選択してください"] + horse_list,
+            index=0 if st.session_state.selected_horse is None else (
+                horse_list.index(st.session_state.selected_horse) + 1
+                if st.session_state.selected_horse in horse_list else 0
+            )
+        )
 
-# --- ここでradio ---
-horse = st.radio(
-    "🐎 馬を選択",
-    horse_list,
-    key="horse_radio",
-    index=None
-)
-
-# --- 表示制御 ---
-if horse and horse != st.session_state.last_horse:
-    if st.session_state.skip_once:
-        st.session_state.skip_once = False
+        if selected_horse == "選択してください":
+            st.session_state.selected_horse = None
+        else:
+            st.session_state.selected_horse = selected_horse
     else:
-        show_image(horse)
-        st.session_state.last_horse = horse
+        st.selectbox("馬名", ["該当なし"], index=0)
+        st.session_state.selected_horse = None
 
+# --- 画像表示 ---
+if st.session_state.selected_horse:
+    show_image(st.session_state.selected_horse)
