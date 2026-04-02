@@ -38,7 +38,7 @@ if "last_group" not in st.session_state:
     st.session_state.last_group = st.session_state.selected_group
 
 # --- 画面レイアウト ---
-col1, col2 = st.columns([1, 2], gap="small")
+col1, col2 = st.columns([1, 3], gap="small")
 
 with col1:
     selected_group = st.selectbox(
