@@ -65,9 +65,8 @@ if "selected_horse" not in st.session_state:
 selected_group = st.selectbox(
     "行を選択",
     list(groups.keys()),
-    index=list(groups.keys()).index(st.session_state.selected_group)
+    key="selected_group"
 )
-st.session_state.selected_group = selected_group
 
 selected_chars = groups[st.session_state.selected_group]
 filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
