@@ -27,6 +27,16 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+#余白を削る
+st.markdown("""
+<style>
+.block-container {
+    padding-top: 0.2rem !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+#画像表示
 @st.dialog(" ", width="large")
 def show_image(name):
     image_path = f"images/{name}.jpg"
@@ -62,8 +72,6 @@ st.session_state.selected_group = selected_group
 selected_chars = groups[st.session_state.selected_group]
 filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
 horse_list = filtered["馬名"].tolist()
-
-st.write("### 馬名を選択")
 
 for horse in horse_list:
     label = f"✓ {horse}" if horse == st.session_state.selected_horse else horse
