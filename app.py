@@ -7,6 +7,32 @@ st.set_page_config(layout="wide")
 df = pd.read_excel("実験馬選択.xlsx")
 df = df.fillna("")
 
+st.markdown("""
+<style>
+/* iPhoneなどの狭い画面でも2列を維持 */
+@media (max-width: 768px) {
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        gap: 0.4rem !important;
+    }
+
+    div[data-testid="column"] {
+        min-width: 0 !important;
+        flex: 1 1 0 !important;
+    }
+
+    div[data-testid="stButton"] > button {
+        width: 100% !important;
+        font-size: 13px !important;
+        padding: 0.4rem 0.3rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
 @st.dialog(" ", width="large")
 def show_image(name):
     image_path = f"images/{name}.jpg"
@@ -46,10 +72,10 @@ horse_list = filtered["馬名"].tolist()
 
 st.write("### 馬名を選択")
 
-cols = st.columns(3)   # 2～4くらいで調整可
+cols = st.columns(2, gap="small")
 
 for i, horse in enumerate(horse_list):
-    with cols[i % 3]:
+    with cols[i % 2]:
         label = f"✅ {horse}" if horse == st.session_state.selected_horse else horse
         if st.button(label, use_container_width=True, key=f"horse_{horse}"):
             st.session_state.selected_horse = horse
