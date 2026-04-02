@@ -33,6 +33,42 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+#ボタン小さく
+st.markdown("""
+<style>
+@media (max-width: 768px) {
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        gap: 0.25rem !important;
+    }
+
+    div[data-testid="column"] {
+        min-width: 0 !important;
+        flex: 1 1 0 !important;
+        padding: 0 !important;
+    }
+
+    div[data-testid="stButton"] {
+        width: 100% !important;
+    }
+
+    div[data-testid="stButton"] > button {
+        width: 100% !important;
+        min-height: 32px !important;
+        height: 32px !important;
+        font-size: 11px !important;
+        padding: 0 4px !important;
+        line-height: 1 !important;
+        border-radius: 6px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 @st.dialog(" ", width="large")
 def show_image(name):
     image_path = f"images/{name}.jpg"
@@ -76,7 +112,10 @@ cols = st.columns(2, gap="small")
 
 for i, horse in enumerate(horse_list):
     with cols[i % 2]:
-        label = f"✅ {horse}" if horse == st.session_state.selected_horse else horse
-        if st.button(label, use_container_width=True, key=f"horse_{horse}"):
+        label = horse
+        if horse == st.session_state.selected_horse:
+            label = f"✓ {horse}"
+
+        if st.button(label, key=f"horse_{horse}", use_container_width=True):
             st.session_state.selected_horse = horse
             show_image(horse)
