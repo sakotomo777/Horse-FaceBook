@@ -7,6 +7,26 @@ st.set_page_config(layout="wide")
 df = pd.read_excel("実験馬選択.xlsx")
 df = df.fillna("")
 
+st.markdown("""
+<style>
+@media (max-width: 768px) {
+    div[data-testid="stButton"] {
+        margin-bottom: 2px !important;
+    }
+
+    div[data-testid="stButton"] > button {
+        padding: 3px 4px !important;
+        font-size: 12px !important;
+        min-height: 30px !important;
+    }
+
+    div[data-testid="element-container"] {
+        margin-bottom: 2px !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
 @st.dialog(" ", width="large")
 def show_image(name):
     image_path = f"images/{name}.jpg"
