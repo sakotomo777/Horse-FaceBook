@@ -15,7 +15,6 @@ def show_image(name):
     else:
         st.warning("画像が見つかりません")
 
-# --- 五十音グループ ---
 groups = {
     "ア行": ("ア","イ","ウ","ヴ","エ","オ"),
     "カ行": ("カ","キ","ク","ケ","コ","ガ","ギ","グ","ゲ","ゴ"),
@@ -27,57 +26,31 @@ groups = {
     "ヤラワ行": ("ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ")
 }
 
-# セッション初期化
 if "selected_group" not in st.session_state:
     st.session_state.selected_group = "ア行"
 
 if "selected_horse" not in st.session_state:
     st.session_state.selected_horse = None
 
-if "last_group" not in st.session_state:
-    st.session_state.last_group = st.session_state.selected_group
-
-# --- 画面レイアウト ---
-col1, col2 = st.columns([1, 2], gap="small")
-
-with col1:
-    selected_group = st.selectbox(
-        "行",
-        list(groups.keys()),
-        index=list(groups.keys()).index(st.session_state.selected_group)
-    )
-
-# 行が変わったら馬選択をリセット
-if selected_group != st.session_state.last_group:
-    st.session_state.selected_horse = None
-    st.session_state.last_group = selected_group
+selected_group = st.selectbox(
+    "行を選択",
+    list(groups.keys()),
+    index=list(groups.keys()).index(st.session_state.selected_group)
+)
 
 st.session_state.selected_group = selected_group
 
-# --- 馬名一覧 ---
 selected_chars = groups[st.session_state.selected_group]
 filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
 horse_list = filtered["馬名"].tolist()
 
-with col2:
-    if horse_list:
-        selected_horse = st.selectbox(
-            "馬名",
-            options=["選択してください"] + horse_list,
-            index=0 if st.session_state.selected_horse is None else (
-                horse_list.index(st.session_state.selected_horse) + 1
-                if st.session_state.selected_horse in horse_list else 0
-            )
-        )
+st.write("### 馬名を選択")
 
-        if selected_horse == "選択してください":
-            st.session_state.selected_horse = None
-        else:
-            st.session_state.selected_horse = selected_horse
-    else:
-        st.selectbox("馬名", ["該当なし"], index=0)
-        st.session_state.selected_horse = None
+cols = st.columns(3)   # 2～4くらいで調整可
 
-# --- 画像表示 ---
-if st.session_state.selected_horse:
-    show_image(st.session_state.selected_horse)
+for i, horse in enumerate(horse_list):
+    with cols[i % 3]:
+        label = f"✅ {horse}" if horse == st.session_state.selected_horse else horse
+        if st.button(label, use_container_width=True, key=f"horse_{horse}"):
+            st.session_state.selected_horse = horse
+            show_image(horse)
