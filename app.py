@@ -27,7 +27,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-#余白を削る
+# 余白を削る
 st.markdown("""
 <style>
 .block-container {
@@ -36,7 +36,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-#画像表示
+# 画像表示
 @st.dialog(" ", width="large")
 def show_image(name):
     image_path = f"images/{name}.jpg"
@@ -62,11 +62,19 @@ if "selected_group" not in st.session_state:
 if "selected_horse" not in st.session_state:
     st.session_state.selected_horse = None
 
-selected_group = st.selectbox(
+if "prev_group" not in st.session_state:
+    st.session_state.prev_group = st.session_state.selected_group
+
+st.selectbox(
     "行を選択",
     list(groups.keys()),
     key="selected_group"
 )
+
+# 行が変わったら馬選択をリセット
+if st.session_state.selected_group != st.session_state.prev_group:
+    st.session_state.selected_horse = None
+    st.session_state.prev_group = st.session_state.selected_group
 
 selected_chars = groups[st.session_state.selected_group]
 filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
