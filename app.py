@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import os
+from streamlit_image_coordinates import streamlit_image_coordinates
+from PIL import Image, ImageDraw
 
 st.set_page_config(layout="wide")
 
@@ -117,71 +119,73 @@ st.selectbox(
     key="selected_group"
 )
 #選択画像
-import base64
-from pathlib import Path
+# --- チェック状態の初期化 ---
+parts = ["right_back", "left_back", "right_front", "left_front", "head"]
 
-img_path = Path("images/horse-image.png")
-img_base64 = base64.b64encode(img_path.read_bytes()).decode()
+for p in parts:
+    if p not in st.session_state:
+        st.session_state[p] = False
 
-# CSS
-st.markdown("""
-<style>
-.horse-wrapper {
-    position: relative;
-    width: 150px;
-    height: 190px;
+# --- 画像読み込み ---
+img = Image.open("images/horse-image.png").convert("RGBA")
+img = img.resize((150, 190))
+
+draw = ImageDraw.Draw(img)
+
+# チェック位置
+boxes = {
+    "right_back":  (35, 15),
+    "left_back":   (105, 15),
+    "right_front": (10, 110),
+    "left_front":  (130, 110),
+    "head":        (70, 165),
 }
 
-/* 画像 */
-.horse-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 150px;
-}
+box_size = 14
 
-/* checkboxを入れる枠 */
-.cb-box {
-    position: absolute;
-}
+# □を画像に描く
+for key, (x, y) in boxes.items():
+    draw.rectangle(
+        [x, y, x + box_size, y + box_size],
+        outline="black",
+        width=2
+    )
 
-/* 各位置 */
-.cb-right-back { top: 10px; left: 30px; }
-.cb-left-back  { top: 10px; left: 105px; }
+    # チェック済みなら✓を描く
+    if st.session_state[key]:
+        draw.line([x + 3, y + 7, x + 6, y + 11, x + 12, y + 3], fill="black", width=2)
 
-.cb-right-front { top: 110px; left: 5px; }
-.cb-left-front  { top: 110px; left: 130px; }
+# --- 画像クリック取得 ---
+clicked = streamlit_image_coordinates(
+    img,
+    key="horse_check_image"
+)
 
-.cb-head { top: 165px; left: 70px; }
-</style>
-""", unsafe_allow_html=True)
+# --- クリック位置判定 ---
+if clicked:
+    cx = clicked["x"]
+    cy = clicked["y"]
 
-left_area, button_area = st.columns([1, 2])
+    for key, (x, y) in boxes.items():
+        if x <= cx <= x + box_size and y <= cy <= y + box_size:
+            st.session_state[key] = not st.session_state[key]
+            st.rerun()
 
-with left_area:
-    # 枠を作る
-    st.markdown(f"""
-    <div class="horse-wrapper">
-        <img class="horse-img" src="data:image/png;base64,{img_base64}">
-    </div>
-    """, unsafe_allow_html=True)
+# --- チェック結果 ---
+checked = []
 
-    # 各checkboxを“枠付きで”配置
-    def place_cb(cls, key):
-        st.markdown(f'<div class="cb-box {cls}">', unsafe_allow_html=True)
-        val = st.checkbox("", key=key)
-        st.markdown('</div>', unsafe_allow_html=True)
-        return val
+if st.session_state["right_back"]:
+    checked.append("右後")
+if st.session_state["left_back"]:
+    checked.append("左後")
+if st.session_state["right_front"]:
+    checked.append("右前")
+if st.session_state["left_front"]:
+    checked.append("左前")
+if st.session_state["head"]:
+    checked.append("頭")
 
-    right_back = place_cb("cb-right-back", "right_back")
-    left_back  = place_cb("cb-left-back", "left_back")
-    right_front = place_cb("cb-right-front", "right_front")
-    left_front  = place_cb("cb-left-front", "left_front")
-    head        = place_cb("cb-head", "head")
-
-with button_area:
-    st.button("登録", use_container_width=True)
-    st.button("クリア", use_container_width=True)
+st.write("チェック:", checked)
 
 # 行が変わったら馬選択をリセット
 if st.session_state.selected_group != st.session_state.prev_group:
