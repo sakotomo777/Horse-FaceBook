@@ -70,6 +70,14 @@ st.selectbox(
     list(groups.keys()),
     key="selected_group"
 )
+# --- 固定画像＋今後ボタン置き場 ---
+image_col, button_col = st.columns([1, 2])
+
+with image_col:
+    st.image("images/horse-image.png", width=160)
+
+with button_col:
+    st.write("ここに今後ボタンを置く")
 
 # 行が変わったら馬選択をリセット
 if st.session_state.selected_group != st.session_state.prev_group:
