@@ -45,6 +45,24 @@ def show_image(name):
     else:
         st.warning("画像が見つかりません")
 
+# スマホでも columns を横並びにする
+st.markdown("""
+<style>
+@media (max-width: 768px) {
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+    }
+
+    div[data-testid="column"] {
+        min-width: 0 !important;
+        width: auto !important;
+        flex: unset !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
 groups = {
     "ア行": ("ア","イ","ウ","ヴ","エ","オ"),
     "カ行": ("カ","キ","ク","ケ","コ","ガ","ギ","グ","ゲ","ゴ"),
@@ -70,14 +88,15 @@ st.selectbox(
     list(groups.keys()),
     key="selected_group"
 )
-# --- 固定画像＋今後ボタン置き場 ---
-image_col, button_col = st.columns([1, 2])
+# --- 固定馬画像＋ボタン置き場 ---
+image_col, button_col = st.columns([1, 2], gap="small")
 
 with image_col:
-    st.image("images/horse-image.png", width=160)
+    st.image("images/horse-image.png", width=110)
 
 with button_col:
-    st.write("ここに今後ボタンを置く")
+    st.button("ボタン1", use_container_width=True)
+    st.button("ボタン2", use_container_width=True)
 
 # 行が変わったら馬選択をリセット
 if st.session_state.selected_group != st.session_state.prev_group:
