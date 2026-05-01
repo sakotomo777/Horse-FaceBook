@@ -82,9 +82,12 @@ st.selectbox(
     list(groups.keys()),
     key="selected_group"
 )
-# --- 部位チェック＋検索 ---
-left_col, right_col = st.columns([3, 1])
+# --- 条件エリア ---
+st.markdown("### 条件選択")
 
+left_col, right_col = st.columns([2, 1])
+
+# 左：チェックボックス
 with left_col:
     head = st.checkbox("頭")
     right_front = st.checkbox("右前")
@@ -92,9 +95,14 @@ with left_col:
     right_back = st.checkbox("右後")
     left_back = st.checkbox("左後")
 
+# 右：毛色＋検索ボタン
 with right_col:
-    search_clicked = st.button("検索", use_container_width=True)
+    color = st.selectbox(
+        "毛色",
+        ["選択なし", "鹿", "黒", "芦"]
+    )
 
+    search_clicked = st.button("検索", use_container_width=True)
 # 行が変わったら馬選択をリセット
 if st.session_state.selected_group != st.session_state.prev_group:
     st.session_state.selected_horse = None
