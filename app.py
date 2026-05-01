@@ -88,41 +88,33 @@ st.selectbox(
     list(groups.keys()),
     key="selected_group"
 )
-# --- 固定馬画像＋チェックボックス ---
-st.markdown("#### チェック位置")
+# --- 固定馬画像＋チェックボックス＋ボタン置き場 ---
+left_area, button_area = st.columns([1, 2], gap="small")
 
-top_col = st.columns([1, 1, 1])
-with top_col[1]:
-    st.checkbox("頭", key="check_head")
+with left_area:
+    top_col = st.columns([1, 1, 1])
+    with top_col[1]:
+        st.checkbox("頭", key="check_head")
 
-mid_left, mid_center, mid_right = st.columns([1, 2, 1])
+    mid_left, mid_center, mid_right = st.columns([1, 2, 1])
+    with mid_left:
+        st.checkbox("左前", key="check_left_front")
 
-with mid_left:
-    st.checkbox("左前", key="check_left_front")
+    with mid_center:
+        st.image("images/horse-image.png", width=130)
 
-with mid_center:
-    st.image("images/horse-image.png", width=130)
+    with mid_right:
+        st.checkbox("右前", key="check_right_front")
 
-with mid_right:
-    st.checkbox("右前", key="check_right_front")
+    bottom_cols = st.columns([1, 1, 1])
+    with bottom_cols[0]:
+        st.checkbox("左後", key="check_left_back")
 
-bottom_cols = st.columns([1, 1, 1])
+    with bottom_cols[2]:
+        st.checkbox("右後", key="check_right_back")
 
-with bottom_cols[0]:
-    st.checkbox("左後", key="check_left_back")
-
-with bottom_cols[2]:
-    st.checkbox("右後", key="check_right_back")
-
-# --- 固定馬画像＋ボタン置き場 ---
-image_col, button_col = st.columns([1, 2], gap="small")
-
-with image_col:
-    st.image("images/horse-image.png", width=110)
-
-with button_col:
-    st.button("ボタン1", use_container_width=True)
-    st.button("ボタン2", use_container_width=True)
+with button_area:
+    st.button("検索", use_container_width=True)
 
 # 行が変わったら馬選択をリセット
 if st.session_state.selected_group != st.session_state.prev_group:
