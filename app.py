@@ -44,6 +44,18 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+div[data-testid="stSelectbox"] {
+    font-size: 12px;
+}
+div[data-testid="stButton"] > button {
+    padding: 4px 6px;
+    font-size: 12px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # --- 画像表示 ---
 @st.dialog(" ", width="large")
 def show_image(name):
