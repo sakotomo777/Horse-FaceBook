@@ -86,22 +86,14 @@ st.selectbox(
 left_col, right_col = st.columns([3, 1])
 
 with left_col:
-    c1, c2, c3, c4, c5 = st.columns(5)
-
-    with c1:
-        head = st.checkbox("頭")
-    with c2:
-        right_front = st.checkbox("右前")
-    with c3:
-        left_front = st.checkbox("左前")
-    with c4:
-        right_back = st.checkbox("右後")
-    with c5:
-        left_back = st.checkbox("左後")
+    head = st.checkbox("頭")
+    right_front = st.checkbox("右前")
+    left_front = st.checkbox("左前")
+    right_back = st.checkbox("右後")
+    left_back = st.checkbox("左後")
 
 with right_col:
     search_clicked = st.button("検索", use_container_width=True)
-
 
 # 行が変わったら馬選択をリセット
 if st.session_state.selected_group != st.session_state.prev_group:
