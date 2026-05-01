@@ -120,26 +120,28 @@ st.selectbox(
 left_area, button_area = st.columns([1, 2], gap="small")
 
 with left_area:
+    # ▼ 上：後ろ脚（左右も反転）
     top_col = st.columns([1, 1, 1])
-    with top_col[1]:
-        st.checkbox("頭", key="check_head")
+    with top_col[0]:
+        st.checkbox("右後", key="check_right_back")  # ←逆
+    with top_col[2]:
+        st.checkbox("左後", key="check_left_back")  # ←逆
 
+    # ▼ 中央：前脚＋画像（左右反転）
     mid_left, mid_center, mid_right = st.columns([1, 2, 1])
     with mid_left:
-        st.checkbox("左前", key="check_left_front")
+        st.checkbox("右前", key="check_right_front")  # ←逆
 
     with mid_center:
         st.image("images/horse-image.png", width=130)
 
     with mid_right:
-        st.checkbox("右前", key="check_right_front")
+        st.checkbox("左前", key="check_left_front")  # ←逆
 
-    bottom_cols = st.columns([1, 1, 1])
-    with bottom_cols[0]:
-        st.checkbox("左後", key="check_left_back")
-
-    with bottom_cols[2]:
-        st.checkbox("右後", key="check_right_back")
+    # ▼ 下：頭
+    bottom_col = st.columns([1, 1, 1])
+    with bottom_col[1]:
+        st.checkbox("頭", key="check_head")
 
 with button_area:
     st.button("検索", use_container_width=True)
