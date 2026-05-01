@@ -104,30 +104,15 @@ st.selectbox(
     key="selected_group"
 )
 # --- 条件エリア ---
-st.markdown("### 条件選択")
+head = st.checkbox("頭")
+right_front = st.checkbox("右前")
+left_front = st.checkbox("左前")
+right_back = st.checkbox("右後")
+left_back = st.checkbox("左後")
 
-left_col, right_col = st.columns([1, 10]) 
+color = st.selectbox("毛色", ["選択なし", "鹿", "黒", "芦"])
 
-# 左：チェックボックス
-with left_col:
-    head = st.checkbox("頭")
-    right_front = st.checkbox("右前")
-    left_front = st.checkbox("左前")
-    right_back = st.checkbox("右後")
-    left_back = st.checkbox("左後")
-
-# 右：毛色＋検索（幅制限）
-with right_col:
-    st.markdown('<div style="max-width:120px;">', unsafe_allow_html=True)
-
-    color = st.selectbox(
-        "毛色",
-        ["選択なし", "鹿", "黒", "芦"]
-    )
-
-    search_clicked = st.button("検索")
-
-    st.markdown('</div>', unsafe_allow_html=True)
+search_clicked = st.button("検索", use_container_width=True)
 
 # 行が変わったら馬選択をリセット
 if st.session_state.selected_group != st.session_state.prev_group:
