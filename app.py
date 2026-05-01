@@ -4,7 +4,7 @@ import os
 
 st.set_page_config(layout="wide")
 
-df = pd.read_excel("実験馬選択.xlsx")
+df = pd.read_excel("馬情報.xlsx")
 df = df.fillna("")
 
 st.markdown("""
