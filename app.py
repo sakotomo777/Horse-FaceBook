@@ -61,14 +61,19 @@ if "selected_horse" not in st.session_state:
 st.selectbox("行を選択", list(groups.keys()), key="selected_group")
 
 # --- 条件 ---
-head = st.checkbox("頭")
-right_front = st.checkbox("右前")
-left_front = st.checkbox("左前")
-right_back = st.checkbox("右後")
-left_back = st.checkbox("左後")
+col1, col2, col3 = st.columns([0.5, 3, 0.5])
 
+with col2:
+    head = st.checkbox("頭")
+    right_front = st.checkbox("右前")
+    left_front = st.checkbox("左前")
+    right_back = st.checkbox("右後")
+    left_back = st.checkbox("左後")
+    
 color = st.selectbox("毛色", ["選択なし", "鹿", "黒", "芦"])
 search_clicked = st.button("検索", use_container_width=True)
+
+st.markdown("<br>", unsafe_allow_html=True) 
 
 # --- 馬リスト ---
 selected_chars = groups[st.session_state.selected_group]
