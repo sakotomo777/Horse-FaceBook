@@ -7,7 +7,6 @@ st.set_page_config(layout="wide")
 # --- データ ---
 df = pd.read_excel("馬情報.xlsx").fillna("")
 
-# --- 最低限のCSSだけ ---
 st.markdown("""
 <style>
 .block-container {
@@ -58,19 +57,16 @@ if "selected_horse" not in st.session_state:
     st.session_state.selected_horse = None
 
 # --- 行選択 ---
-st.selectbox("行を選択", list(groups.keys()), key="selected_group")
+st.selectbox("", list(groups.keys()), key="selected_group")
 
 # --- 条件 ---
-col1, col2, col3 = st.columns([0.5, 3, 0.5])
-
-with col2:
-    head = st.checkbox("頭")
-    right_front = st.checkbox("右前")
-    left_front = st.checkbox("左前")
-    right_back = st.checkbox("右後")
-    left_back = st.checkbox("左後")
-    
-color = st.selectbox("毛色", ["選択なし", "鹿", "黒", "芦"])
+st.write("白い個所をチェック")
+head = st.checkbox("頭")
+right_front = st.checkbox("右前")
+left_front = st.checkbox("左前")
+right_back = st.checkbox("右後")
+left_back = st.checkbox("左後")    
+color = st.selectbox("見た目の毛色", ["選択なし", "鹿", "黒", "芦"])
 search_clicked = st.button("検索", use_container_width=True)
 
 st.markdown("<br>", unsafe_allow_html=True) 
