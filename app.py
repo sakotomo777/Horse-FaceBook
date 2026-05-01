@@ -57,7 +57,8 @@ if "selected_horse" not in st.session_state:
     st.session_state.selected_horse = None
 
 # --- 行選択 ---
-st.selectbox("", list(groups.keys()), key="selected_group")
+st.markdown("<br>", unsafe_allow_html=True) 
+st.selectbox("馬名から選ぶ場合はこっち", list(groups.keys()), key="selected_group")
 
 # --- 条件 ---
 st.write("白い個所をチェック")
