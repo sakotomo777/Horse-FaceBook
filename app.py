@@ -63,6 +63,34 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# チェックボックスのラベルを消す
+st.markdown("""
+<style>
+div[data-testid="stCheckbox"] label p {
+    display: none;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+/* チェックボックスを画像側に寄せる */
+div[data-testid="stCheckbox"] {
+    margin-bottom: -10px;
+}
+
+/* 左側のチェックを右に寄せる */
+div[data-testid="stHorizontalBlock"] > div:nth-child(1) div[data-testid="stCheckbox"] {
+    margin-right: -10px;
+}
+
+/* 右側のチェックを左に寄せる */
+div[data-testid="stHorizontalBlock"] > div:nth-child(3) div[data-testid="stCheckbox"] {
+    margin-left: -10px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 groups = {
     "ア行": ("ア","イ","ウ","ヴ","エ","オ"),
     "カ行": ("カ","キ","ク","ケ","コ","ガ","ギ","グ","ゲ","ゴ"),
