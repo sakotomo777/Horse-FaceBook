@@ -56,6 +56,15 @@ div[data-testid="stButton"] > button {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+div[data-testid="stCheckbox"] label {
+    font-size: 12px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 # --- 画像表示 ---
 @st.dialog(" ", width="large")
 def show_image(name):
