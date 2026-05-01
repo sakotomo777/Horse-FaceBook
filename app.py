@@ -106,7 +106,7 @@ st.selectbox(
 # --- 条件エリア ---
 st.markdown("### 条件選択")
 
-left_col, right_col = st.columns([1, 3]) 
+left_col, right_col = st.columns([1, 10]) 
 
 # 左：チェックボックス
 with left_col:
