@@ -95,26 +95,23 @@ if st.session_state.search_mode == "condition":
 
     filtered = df.copy()
 
+    # 毛色
     if color != "選択なし":
         filtered = filtered[filtered["毛色"] == color]
+    # チェック状態を辞書化
+    conditions = {
+        "額": head,
+        "右前": right_front,
+        "左前": left_front,
+        "右後": right_back,
+        "左後": left_back
+    }
 
-    if head:
-        filtered = filtered[filtered["額"] == "○"]
-
-    if right_front:
-        filtered = filtered[filtered["右前"] == "○"]
-
-    if left_front:
-        filtered = filtered[filtered["左前"] == "○"]
-
-    if right_back:
-        filtered = filtered[filtered["右後"] == "○"]
-
-    if left_back:
-        filtered = filtered[filtered["左後"] == "○"]
-
-    filtered = filtered.sort_values("馬名")
-
+    for col, is_checked in conditions.items():
+        if is_checked:
+            filtered = filtered[filtered[col] == "○"]
+        else:
+            filtered = filtered[filtered[col] != "○"]
 else:
     selected_chars = groups[st.session_state.selected_group]
     filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
