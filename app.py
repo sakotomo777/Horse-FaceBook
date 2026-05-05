@@ -31,8 +31,7 @@ div[data-testid="stCheckbox"] label {
 st.markdown("""
 <style>
 div[data-testid="stCheckbox"] {
-    display: flex;
-    justify-content: flex-end;
+    margin-bottom: 8px;
 }
 </style>
 """, unsafe_allow_html=True)
