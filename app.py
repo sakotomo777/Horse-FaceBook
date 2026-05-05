@@ -6,9 +6,11 @@ st.set_page_config(layout="wide")
 
 # --- データ ---
 @st.cache_data
-def load_data():
+def load_data(mtime):
     return pd.read_excel("馬情報.xlsx").fillna("")
-df = load_data()
+
+file_mtime = os.path.getmtime("馬情報.xlsx")
+df = load_data(file_mtime)
 
 st.markdown("""
 <style>
