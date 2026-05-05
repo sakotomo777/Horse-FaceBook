@@ -92,7 +92,7 @@ conditions_input = {
     "右後": st.checkbox("右後"),
     "左後": st.checkbox("左後"),
 }
-color = st.selectbox("見た目の毛色", ["鹿", "黒", "芦"])
+color = st.selectbox("見た目の毛色", ["鹿", "黒", "栗", "芦"])
 
 search_clicked = st.button("🔎　検索", use_container_width=True)
 
