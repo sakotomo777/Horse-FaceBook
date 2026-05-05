@@ -59,6 +59,9 @@ if "selected_horse" not in st.session_state:
 if "search_mode" not in st.session_state:
     st.session_state.search_mode = "kana"
 
+if "search_conditions" not in st.session_state:
+    st.session_state.search_conditions = {}
+
 # --- 行選択 ---
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -88,18 +91,8 @@ if search_clicked:
     st.session_state.search_mode = "condition"
     st.session_state.selected_horse = None
 
-st.markdown("<br>", unsafe_allow_html=True)
-
-# --- 馬リスト ---
-if st.session_state.search_mode == "condition":
-
-    filtered = df.copy()
-
-    # 毛色
-    if color != "選択なし":
-        filtered = filtered[filtered["毛色"] == color]
-    # チェック状態を辞書化
-    conditions = {
+    st.session_state.search_conditions = {
+        "color": color,
         "額": head,
         "右前": right_front,
         "左前": left_front,
@@ -107,11 +100,23 @@ if st.session_state.search_mode == "condition":
         "左後": left_back
     }
 
-    for col, is_checked in conditions.items():
-        if is_checked:
+st.markdown("<br>", unsafe_allow_html=True)
+
+# --- 馬リスト ---
+if st.session_state.search_mode == "condition":
+
+    cond = st.session_state.search_conditions
+    filtered = df.copy()
+
+    if cond["color"] != "選択なし":
+        filtered = filtered[filtered["毛色"] == cond["color"]]
+
+    for col in ["額", "右前", "左前", "右後", "左後"]:
+        if cond[col]:
             filtered = filtered[filtered[col] == "○"]
         else:
             filtered = filtered[filtered[col] != "○"]
+
 else:
     selected_chars = groups[st.session_state.selected_group]
     filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
