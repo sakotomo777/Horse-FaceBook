@@ -5,9 +5,7 @@ import os
 st.set_page_config(layout="wide")
 
 # --- データ ---
-@st.cache_data
-def load_data():
-    return pd.read_excel("馬情報.xlsx").fillna("")
+df = pd.read_excel("馬情報.xlsx").fillna("")
 
 st.markdown("""
 <style>
