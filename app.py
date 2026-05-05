@@ -82,15 +82,16 @@ if st.session_state.prev_group != st.session_state.selected_group:
 # --- 条件 ---
 st.write("白い個所をチェック")
 
-head = st.checkbox("頭")
-right_front = st.checkbox("右前")
-left_front = st.checkbox("左前")
-right_back = st.checkbox("右後")
-left_back = st.checkbox("左後")
+conditions_input = {
+    "額": st.checkbox("頭"),
+    "右前": st.checkbox("右前"),
+    "左前": st.checkbox("左前"),
+    "右後": st.checkbox("右後"),
+    "左後": st.checkbox("左後"),
+}
+color = st.selectbox("見た目の毛色", ["鹿", "黒", "芦"])
 
-color = st.selectbox("見た目の毛色", ["選択なし", "鹿", "黒", "芦"])
-
-search_clicked = st.button("検索", use_container_width=True)
+search_clicked = st.button("🔎　検索", use_container_width=True)
 
 if search_clicked:
     st.session_state.search_mode = "condition"
@@ -98,23 +99,17 @@ if search_clicked:
 
     st.session_state.search_conditions = {
         "color": color,
-        "額": head,
-        "右前": right_front,
-        "左前": left_front,
-        "右後": right_back,
-        "左後": left_back
+        **conditions_input
     }
-
-st.markdown("<br>", unsafe_allow_html=True)
 
 # --- 馬リスト ---
 if st.session_state.search_mode == "condition":
 
     cond = st.session_state.search_conditions
     filtered = df.copy()
+    filtered = filtered.sort_values("馬名")
 
-    if cond["color"] != "選択なし":
-        filtered = filtered[filtered["毛色"] == cond["color"]]
+    filtered = filtered[filtered["毛色"] == cond["color"]]
 
     for col in ["額", "右前", "左前", "右後", "左後"]:
         if cond[col]:
