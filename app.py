@@ -7,19 +7,34 @@ st.set_page_config(layout="wide")
 # --- データ ---
 df = pd.read_excel("馬情報.xlsx").fillna("")
 
-# --- スタイル ---
 st.markdown("""
 <style>
-.block-container { padding-top: 0.5rem; }
+.block-container {
+    padding-top: 0.5rem;
+}
 
 div[data-testid="stButton"] > button {
     font-size: 12px;
     padding: 4px 6px;
 }
 
-div[data-testid="stSelectbox"],
+div[data-testid="stSelectbox"] {
+    font-size: 12px;
+}
+
 div[data-testid="stCheckbox"] label {
     font-size: 12px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+div[data-testid="stCheckbox"] label {
+    font-size: 14px;
+}
+div[data-testid="stCheckbox"] {
+    margin-bottom: 6px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -33,7 +48,7 @@ def show_image(name):
     else:
         st.warning("画像が見つかりません")
 
-# --- 五十音 ---
+# --- グループ ---
 groups = {
     "ア行": ("ア","イ","ウ","ヴ","エ","オ"),
     "カ行": ("カ","キ","ク","ケ","コ","ガ","ギ","グ","ゲ","ゴ"),
@@ -45,7 +60,7 @@ groups = {
     "ヤラワ行": ("ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ"),
 }
 
-# --- セッション ---
+# --- 状態 ---
 if "selected_group" not in st.session_state:
     st.session_state.selected_group = "ア行"
 
@@ -58,75 +73,65 @@ if "search_mode" not in st.session_state:
 if "search_conditions" not in st.session_state:
     st.session_state.search_conditions = {}
 
-if "prev_group" not in st.session_state:
-    st.session_state.prev_group = st.session_state.selected_group
-
 # --- 行選択 ---
-selected_group = st.selectbox(
+st.markdown("<br>", unsafe_allow_html=True)
+
+st.selectbox(
     "馬名から選ぶ場合はこっち",
     list(groups.keys()),
     key="selected_group"
 )
 
-# 行変更時のみリセット
-if st.session_state.prev_group != selected_group:
-    st.session_state.search_mode = "kana"
-    st.session_state.prev_group = selected_group
+# 行変更を検知してモード切替
+if "prev_group" not in st.session_state:
+    st.session_state.prev_group = st.session_state.selected_group
 
-# --- 条件入力 ---
+if st.session_state.prev_group != st.session_state.selected_group:
+    st.session_state.search_mode = "kana"
+    st.session_state.prev_group = st.session_state.selected_group
+
+# --- 条件 ---
 st.write("白い個所をチェック")
 
-col1, col2 = st.columns(2)
-with col1:
-    head = st.checkbox("頭")
-    left_front = st.checkbox("左前")
-    left_back = st.checkbox("左後")
-with col2:
-    right_front = st.checkbox("右前")
-    right_back = st.checkbox("右後")
-
 conditions_input = {
-    "額": head,
-    "右前": right_front,
-    "左前": left_front,
-    "右後": right_back,
-    "左後": left_back,
+    "額": st.checkbox("頭"),
+    "右前": st.checkbox("右前"),
+    "左前": st.checkbox("左前"),
+    "右後": st.checkbox("右後"),
+    "左後": st.checkbox("左後"),
 }
-
 color = st.selectbox("見た目の毛色", ["鹿", "黒", "芦"])
 
 search_clicked = st.button("🔎　検索", use_container_width=True)
 
-# --- 検索実行（条件を固定） ---
 if search_clicked:
     st.session_state.search_mode = "condition"
     st.session_state.selected_horse = None
+
     st.session_state.search_conditions = {
         "color": color,
         **conditions_input
     }
 
-# --- フィルタ処理 ---
+# --- 馬リスト ---
 if st.session_state.search_mode == "condition":
 
     cond = st.session_state.search_conditions
     filtered = df.copy()
+    filtered = filtered.sort_values("馬名")
 
     filtered = filtered[filtered["毛色"] == cond["color"]]
 
-    for col, val in cond.items():
-        if col == "color":
-            continue
-        if val:
+    for col in ["額", "右前", "左前", "右後", "左後"]:
+        if cond[col]:
             filtered = filtered[filtered[col] == "○"]
         else:
             filtered = filtered[filtered[col] != "○"]
 
 else:
-    selected_chars = groups[selected_group]
+    selected_chars = groups[st.session_state.selected_group]
     filtered = df[df["馬名"].astype(str).str.startswith(selected_chars)]
-
-filtered = filtered.sort_values("馬名")
+    filtered = filtered.sort_values("馬名")
 
 # --- 表示 ---
 if filtered.empty:
