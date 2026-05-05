@@ -71,8 +71,13 @@ st.selectbox(
     key="selected_group"
 )
 
-# 行を変えたら五十音検索に戻す
-st.session_state.search_mode = "kana"
+# 行変更を検知してモード切替
+if "prev_group" not in st.session_state:
+    st.session_state.prev_group = st.session_state.selected_group
+
+if st.session_state.prev_group != st.session_state.selected_group:
+    st.session_state.search_mode = "kana"
+    st.session_state.prev_group = st.session_state.selected_group
 
 # --- 条件 ---
 st.write("白い個所をチェック")
