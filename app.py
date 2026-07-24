@@ -106,6 +106,7 @@ if search_text:
         st.session_state.selected_horse = horse_name
         st.session_state.search_mode = "voice"
         show_image(horse_name)
+        st.session_state.selected_horse = None
 st.write(f"検索結果：{st.session_state.voice_result}")
 
 # --- 条件 ---
