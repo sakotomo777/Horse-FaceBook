@@ -43,6 +43,22 @@ def show_image(name):
     else:
         st.warning("画像が見つかりません")
 
+def voice_search():
+    search_text = st.session_state.voice_input.strip()
+
+    if not search_text:
+        return
+
+    horses = df["馬名"].tolist()
+    result = process.extractOne(search_text, horses, score_cutoff=60)
+
+    if result:
+        horse_name = result[0]
+        st.session_state.voice_result = horse_name
+        st.session_state.selected_horse = horse_name
+        show_image(horse_name)
+    st.session_state.voice_input = ""
+
 # --- グループ ---
 groups = {
     "ア行": ("ア","イ","ウ","ヴ","エ","オ"),
@@ -89,24 +105,13 @@ if st.session_state.prev_group != st.session_state.selected_group:
     st.session_state.search_mode = "kana"
     st.session_state.prev_group = st.session_state.selected_group
 
-search_text = st.text_input(
+st.text_input(
     "🎤 馬名検索",
-    placeholder="入力またはスマホのマイクで話してください"
+    placeholder="入力またはスマホの🎤で話してください",
+    key="voice_input",
+    on_change=voice_search
 )
 
-
-if search_text:
-    horses = df["馬名"].tolist()
-
-    result = process.extractOne(search_text, horses, score_cutoff=60)
-
-    if result:
-        horse_name = result[0]
-        st.session_state.voice_result = horse_name
-        st.session_state.selected_horse = horse_name
-        st.session_state.search_mode = "voice"
-        show_image(horse_name)
-        st.session_state.selected_horse = None
 st.write(f"検索結果：{st.session_state.voice_result}")
 
 # --- 条件 ---
