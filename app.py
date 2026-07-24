@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
+from rapidfuzz import process
 
 st.set_page_config(layout="wide")
 
@@ -67,6 +68,10 @@ if "search_mode" not in st.session_state:
 if "search_conditions" not in st.session_state:
     st.session_state.search_conditions = {}
 
+if "voice_result" not in st.session_state:
+    st.session_state.voice_result = ""
+
+
 # --- 行選択 ---
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -84,11 +89,30 @@ if st.session_state.prev_group != st.session_state.selected_group:
     st.session_state.search_mode = "kana"
     st.session_state.prev_group = st.session_state.selected_group
 
+search_text = st.text_input(
+    "🎤 馬名検索",
+    placeholder="入力またはスマホのマイクで話してください"
+)
+
+
+if search_text:
+    horses = df["馬名"].tolist()
+
+    result = process.extractOne(search_text, horses, score_cutoff=60)
+
+    if result:
+        horse_name = result[0]
+        st.session_state.voice_result = horse_name
+        st.session_state.selected_horse = horse_name
+        st.session_state.search_mode = "voice"
+        show_image(horse_name)
+st.write(f"検索結果：{st.session_state.voice_result}")
+
 # --- 条件 ---
 st.write("白い個所をチェック")
 
 conditions_input = {
-    "額": st.checkbox("頭"),
+    "顔": st.checkbox("顔"),
     "右前": st.checkbox("右前"),
     "左前": st.checkbox("左前"),
     "右後": st.checkbox("右後"),
@@ -116,7 +140,7 @@ if st.session_state.search_mode == "condition":
 
     filtered = filtered[filtered["毛色"] == cond["color"]]
 
-    for col in ["額", "右前", "左前", "右後", "左後"]:
+    for col in ["顔", "右前", "左前", "右後", "左後"]:
         if cond[col]:
             filtered = filtered[filtered[col] == "○"]
         else:
